@@ -31,10 +31,15 @@ jobs:
           cache: true
           cache-dependency-path: go.sum
 
+      - name: Setup mockgen
+        run: |
+          go install go.uber.org/mock/mockgen@latest
+
       - name: Go Generate
         run: |
           go mod tidy
           go generate ./...
+          git diff --exit-code
 
       - name: Setup reviewdog
         uses: reviewdog/action-setup@v1
