@@ -3,21 +3,22 @@ package altnrslog
 
 import (
 	"context"
-	"github.com/newrelic/go-agent/v3/integrations/logcontext"
-	"github.com/newrelic/go-agent/v3/integrations/logcontext-v2/logWriter"
-	"github.com/newrelic/go-agent/v3/newrelic"
 	"io"
 	"log/slog"
 	"os"
+
+	"github.com/newrelic/go-agent/v3/integrations/logcontext"
+	"github.com/newrelic/go-agent/v3/integrations/logcontext-v2/logWriter"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
-// TransactionalHandler is a slog.Handler that adds New Relic distributed tracing metadata to log records.
+// TransactionalHandler is a [slog.Handler] that adds New Relic distributed tracing metadata to log records.
 type TransactionalHandler struct {
 	handler slog.Handler
 	tx      *newrelic.Transaction
 }
 
-// Enabled See: slog.Handler
+// Enabled See: [slog.Handler.Enabled]
 func (h *TransactionalHandler) Enabled(ctx context.Context, level slog.Level) bool {
 	return h.handler.Enabled(ctx, level)
 }
@@ -29,7 +30,7 @@ func (h *TransactionalHandler) Handle(ctx context.Context, r slog.Record) error 
 	return h.handler.Handle(ctx, r)
 }
 
-// WithAttrs See: slog.Handler
+// WithAttrs See: [slog.Handler.WithAttrs]
 func (h *TransactionalHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	return &TransactionalHandler{
 		h.handler.WithAttrs(attrs),
@@ -37,7 +38,7 @@ func (h *TransactionalHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	}
 }
 
-// WithGroup See: slog.Handler
+// WithGroup See: [slog.Handler.WithGroup]
 func (h *TransactionalHandler) WithGroup(name string) slog.Handler {
 	return &TransactionalHandler{
 		h.handler.WithGroup(name),
@@ -45,24 +46,24 @@ func (h *TransactionalHandler) WithGroup(name string) slog.Handler {
 	}
 }
 
-// Properties is an options for creating a new TransactionalHandler.
+// Properties is an options for creating a new [TransactionalHandler].
 type Properties struct {
 	innerWriter        io.Writer
 	json               bool
 	slogHandlerOptions *slog.HandlerOptions
 }
 
-// HandlerOption is a functional option for creating a new TransactionalHandler.
+// HandlerOption is a functional option for creating a new [TransactionalHandler].
 type HandlerOption func(*Properties)
 
-// WithInnerWriter specifies the io.Writer that wraps logWriter.logWriter
+// WithInnerWriter specifies the [io.Writer] that wraps [logWriter.logWriter]
 func WithInnerWriter(w io.Writer) HandlerOption {
 	return func(p *Properties) {
 		p.innerWriter = w
 	}
 }
 
-// WithSlogHandlerSpecify specifies whether to use JSON format and slog.HandlerOptions.
+// WithSlogHandlerSpecify specifies whether to use JSON format and [slog.HandlerOptions].
 func WithSlogHandlerSpecify(json bool, o *slog.HandlerOptions) HandlerOption {
 	return func(p *Properties) {
 		p.json = json
@@ -79,7 +80,7 @@ func buildProperties(options []HandlerOption) *Properties {
 	return p
 }
 
-// NewTransactionalHandler is constructor for TransactionalHandler.
+// NewTransactionalHandler is constructor for [TransactionalHandler].
 func NewTransactionalHandler(app *newrelic.Application, tx *newrelic.Transaction, options ...HandlerOption) *TransactionalHandler {
 	p := buildProperties(options)
 	iw := p.innerWriter
@@ -101,7 +102,7 @@ func NewTransactionalHandler(app *newrelic.Application, tx *newrelic.Transaction
 	}
 }
 
-// attrsFromMetadata converts New Relic linking metadata to slog.Attr.
+// attrsFromMetadata converts New Relic linking metadata to [slog.Attr].
 func attrsFromMetadata(md newrelic.LinkingMetadata) []slog.Attr {
 	return []slog.Attr{
 		slog.String(logcontext.KeyTraceID, md.TraceID),
