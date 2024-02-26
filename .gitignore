@@ -21,5 +21,3 @@
 go.work
 
 .idea/
-
-**mock/*.go
