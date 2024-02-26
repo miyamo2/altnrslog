@@ -33,11 +33,8 @@ jobs:
 
       - name: Go Test
         run: |
-          go test ./... -v -coverpkg=./... -coverprofile=coverage.tmp.out
-
-      - name: Excluded unnecessary modules from coverage.
-        run: |
-          cat coverage.tmp.out | grep -v "mock" > coverage.out
+          TARGET=$(go list ./... | grep -v "mock")
+          go test $TARGET -v -coverpkg=$TARGET -coverprofile=coverage.out
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
