@@ -7,7 +7,8 @@
 [![GitHub License](https://img.shields.io/github/license/miyamo2/altnrslog?style=flat-square&color=blue)](https://img.shields.io/github/license/miyamo2/altnrslog?style=flat-square&color=blue)
 
 altnrslog is an alternative library for [_Logs in Context_](https://docs.newrelic.com/docs/logs/logs-context/logs-in-context/) with `log/slog`.
-With altnrslog, you can also transfer `slog.Attr`.
+
+altnrslog can also transfer `slog.Attr`.
 
 ## Getting started
 
