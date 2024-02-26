@@ -209,8 +209,7 @@ func TestTransactionalHandler_Handle(t *testing.T) {
 	}
 
 	type mockExpect struct {
-		args args
-		err  error
+		err error
 	}
 
 	type test struct {
