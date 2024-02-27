@@ -46,11 +46,14 @@ func (h *TransactionalHandler) WithGroup(name string) slog.Handler {
 	}
 }
 
+type InnerHandlerProvider func(io.Writer) slog.Handler
+
 // Properties is an options for creating a new [TransactionalHandler].
 type Properties struct {
-	innerWriter        io.Writer
-	json               bool
-	slogHandlerOptions *slog.HandlerOptions
+	innerWriter          io.Writer
+	json                 bool
+	slogHandlerOptions   *slog.HandlerOptions
+	innerHandlerProvider InnerHandlerProvider
 }
 
 // HandlerOption is a functional option for creating a new [TransactionalHandler].
@@ -73,6 +76,14 @@ func WithSlogHandlerSpecify(json bool, o *slog.HandlerOptions) HandlerOption {
 	}
 }
 
+// WithInnerHandlerProvider specifies the function that provides the [slog.Handler] to be wrapped.
+func WithInnerHandlerProvider(innerHandlerProvider InnerHandlerProvider) HandlerOption {
+	return func(p *Properties) {
+		p.slogHandlerOptions = nil
+		p.innerHandlerProvider = innerHandlerProvider
+	}
+}
+
 // buildProperties creates a new Properties with the given options.
 func buildProperties(options []HandlerOption) *Properties {
 	p := &Properties{}
@@ -92,6 +103,12 @@ func NewTransactionalHandler(app *newrelic.Application, tx *newrelic.Transaction
 	ww := logWriter.New(iw, app)
 	ww = ww.WithTransaction(tx)
 
+	if p.innerHandlerProvider != nil {
+		return &TransactionalHandler{
+			handler: p.innerHandlerProvider(ww),
+			tx:      tx,
+		}
+	}
 	if p.json {
 		return &TransactionalHandler{
 			handler: slog.NewJSONHandler(ww, p.slogHandlerOptions),

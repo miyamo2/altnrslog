@@ -8,7 +8,9 @@ import (
 	"github.com/newrelic/go-agent/v3/integrations/logcontext"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"go.uber.org/mock/gomock"
+	"io"
 	"log/slog"
+	"reflect"
 	"testing"
 )
 
@@ -74,6 +76,19 @@ func Test_NewTransactionalHandler_WithTextHandler(t *testing.T) {
 	_, ok := handler.handler.(*slog.TextHandler)
 	if !ok {
 		t.Errorf("NewTransactionalHandler() = %T, want %T", handler.handler, &slog.TextHandler{})
+	}
+}
+
+func Test_NewTransactionalHandler_WithInnerHandler(t *testing.T) {
+	app := newrelic.Application{}
+	tx := newrelic.Transaction{}
+	options := []HandlerOption{WithInnerHandlerProvider(func(w io.Writer) slog.Handler {
+		return &mslog.MockHandler{}
+	})}
+	handler := NewTransactionalHandler(&app, &tx, options...)
+	_, ok := handler.handler.(*mslog.MockHandler)
+	if !ok {
+		t.Errorf("NewTransactionalHandler() = %T, want %T", handler.handler, &mslog.MockHandler{})
 	}
 }
 
@@ -166,6 +181,21 @@ func Test_buildProperties(t *testing.T) {
 		args args
 		want *Properties
 	}
+
+	CmpInnerHandlerProvider := func() cmp.Option {
+		return cmp.FilterValues(
+			func(x, y InnerHandlerProvider) bool {
+				return x != nil && y != nil
+			},
+			cmp.Transformer("ToPtr", func(in InnerHandlerProvider) (out uintptr) {
+				return reflect.ValueOf(in).Pointer()
+			}))
+	}
+
+	mockHandlerProvider := func(w io.Writer) slog.Handler {
+		return &mslog.MockHandler{}
+	}
+
 	tests := map[string]test{
 		"happy-path: WithInnerWriter": {
 			args: args{
@@ -190,12 +220,20 @@ func Test_buildProperties(t *testing.T) {
 				},
 			},
 		},
+		"happy-path: WithInnerHandlerProvider": {
+			args: args{
+				options: []HandlerOption{WithInnerHandlerProvider(mockHandlerProvider)},
+			},
+			want: &Properties{
+				innerHandlerProvider: mockHandlerProvider,
+			},
+		},
 	}
 	opt := cmp.AllowUnexported(Properties{})
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
 			got := buildProperties(tt.args.options)
-			if diff := cmp.Diff(*got, *tt.want, opt); diff != "" {
+			if diff := cmp.Diff(*got, *tt.want, opt, CmpInnerHandlerProvider()); diff != "" {
 				t.Error(diff)
 			}
 		})
