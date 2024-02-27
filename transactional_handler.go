@@ -1,4 +1,4 @@
-//go:generate mockgen -destination mock/slog_handler.go log/slog Handler
+//go:generate mockgen -destination internal/mock/slog_handler.go log/slog Handler
 package altnrslog
 
 import (

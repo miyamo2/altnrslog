@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/google/go-cmp/cmp"
-	mslog "github.com/miyamo2/altnrslog/mock"
+	mslog "github.com/miyamo2/altnrslog/internal/mock"
 	"github.com/newrelic/go-agent/v3/integrations/logcontext"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"go.uber.org/mock/gomock"
