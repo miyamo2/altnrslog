@@ -46,17 +46,22 @@ func (h *TransactionalHandler) WithGroup(name string) slog.Handler {
 	}
 }
 
+type InnerHandlerProvider func(io.Writer) slog.Handler
+
 // Properties is an options for creating a new [TransactionalHandler].
 type Properties struct {
-	innerWriter        io.Writer
-	json               bool
-	slogHandlerOptions *slog.HandlerOptions
+	innerWriter          io.Writer
+	json                 bool
+	slogHandlerOptions   *slog.HandlerOptions
+	innerHandlerProvider InnerHandlerProvider
 }
 
 // HandlerOption is a functional option for creating a new [TransactionalHandler].
 type HandlerOption func(*Properties)
 
 // WithInnerWriter specifies the [io.Writer] that wraps [logWriter.logWriter]
+//
+// [logWriter.logWriter]: https://pkg.go.dev/github.com/newrelic/go-agent/v3/integrations/logcontext-v2/logWriter#LogWriter
 func WithInnerWriter(w io.Writer) HandlerOption {
 	return func(p *Properties) {
 		p.innerWriter = w
@@ -68,6 +73,14 @@ func WithSlogHandlerSpecify(json bool, o *slog.HandlerOptions) HandlerOption {
 	return func(p *Properties) {
 		p.json = json
 		p.slogHandlerOptions = o
+	}
+}
+
+// WithInnerHandlerProvider specifies the function that provides the [slog.Handler] to be wrapped.
+func WithInnerHandlerProvider(innerHandlerProvider InnerHandlerProvider) HandlerOption {
+	return func(p *Properties) {
+		p.slogHandlerOptions = nil
+		p.innerHandlerProvider = innerHandlerProvider
 	}
 }
 
@@ -90,6 +103,12 @@ func NewTransactionalHandler(app *newrelic.Application, tx *newrelic.Transaction
 	ww := logWriter.New(iw, app)
 	ww = ww.WithTransaction(tx)
 
+	if p.innerHandlerProvider != nil {
+		return &TransactionalHandler{
+			handler: p.innerHandlerProvider(ww),
+			tx:      tx,
+		}
+	}
 	if p.json {
 		return &TransactionalHandler{
 			handler: slog.NewJSONHandler(ww, p.slogHandlerOptions),
