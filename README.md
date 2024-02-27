@@ -6,9 +6,9 @@
 [![codecov](https://codecov.io/gh/miyamo2/altnrslog/graph/badge.svg?token=GLLLYODW45)](https://codecov.io/gh/miyamo2/altnrslog)
 [![GitHub License](https://img.shields.io/github/license/miyamo2/altnrslog?style=flat-square&color=blue)](https://img.shields.io/github/license/miyamo2/altnrslog?style=flat-square&color=blue)
 
-altnrslog is an alternative library for [_Logs in Context_](https://docs.newrelic.com/docs/logs/logs-context/logs-in-context/) with `log/slog`.
+altnrslog is an alternative library for [_New Relic Logs in Context_](https://docs.newrelic.com/docs/logs/logs-context/logs-in-context/) with `log/slog`.
 
-altnrslog can also transfer `slog.Attr`.
+altnrslog can also forward `slog.Attr` even only APM Agent.
 
 ## Getting started
 
