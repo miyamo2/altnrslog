@@ -4,6 +4,7 @@
 [![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/miyamo2/altnrslog?logo=go&style=flat-square)](https://img.shields.io/github/go-mod/go-version/miyamo2/altnrslog?logo=go&style=flat-square)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/miyamo2/altnrslog?style=flat-square)](https://img.shields.io/github/v/release/miyamo2/altnrslog?style=flat-square)
 [![codecov](https://codecov.io/gh/miyamo2/altnrslog/graph/badge.svg?token=GLLLYODW45)](https://codecov.io/gh/miyamo2/altnrslog)
+[![Go Report Card](https://goreportcard.com/badge/github.com/miyamo2/altnrslog)](https://goreportcard.com/report/github.com/miyamo2/altnrslog)
 [![GitHub License](https://img.shields.io/github/license/miyamo2/altnrslog?style=flat-square&color=blue)](https://img.shields.io/github/license/miyamo2/altnrslog?style=flat-square&color=blue)
 
 altnrslog is an alternative library for [_New Relic Logs in Context_](https://docs.newrelic.com/docs/logs/logs-context/logs-in-context/) with `log/slog`.
