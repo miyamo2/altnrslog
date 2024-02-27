@@ -57,6 +57,8 @@ type Properties struct {
 type HandlerOption func(*Properties)
 
 // WithInnerWriter specifies the [io.Writer] that wraps [logWriter.logWriter]
+//
+// [logWriter.logWriter]: https://pkg.go.dev/github.com/newrelic/go-agent/v3/integrations/logcontext-v2/logWriter#LogWriter
 func WithInnerWriter(w io.Writer) HandlerOption {
 	return func(p *Properties) {
 		p.innerWriter = w
