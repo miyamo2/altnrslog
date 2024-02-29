@@ -228,6 +228,14 @@ func Test_buildProperties(t *testing.T) {
 				innerHandlerProvider: mockHandlerProvider,
 			},
 		},
+		"happy-path: WithLogLevel": {
+			args: args{
+				options: []HandlerOption{WithLogLevel(slog.LevelWarn)},
+			},
+			want: &Properties{
+				logLevel: slog.LevelWarn,
+			},
+		},
 	}
 	opt := cmp.AllowUnexported(Properties{})
 	for name, tt := range tests {

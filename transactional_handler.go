@@ -16,11 +16,12 @@ import (
 type TransactionalHandler struct {
 	handler slog.Handler
 	tx      *newrelic.Transaction
+	level   slog.Level
 }
 
 // Enabled See: [slog.Handler.Enabled]
 func (h *TransactionalHandler) Enabled(ctx context.Context, level slog.Level) bool {
-	return h.handler.Enabled(ctx, level)
+	return level >= h.level && h.handler.Enabled(ctx, level)
 }
 
 // Handle adds New Relic distributed tracing metadata to log records before passing them to the wrapped handler.
@@ -35,6 +36,7 @@ func (h *TransactionalHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	return &TransactionalHandler{
 		h.handler.WithAttrs(attrs),
 		h.tx,
+		h.level,
 	}
 }
 
@@ -43,6 +45,7 @@ func (h *TransactionalHandler) WithGroup(name string) slog.Handler {
 	return &TransactionalHandler{
 		h.handler.WithGroup(name),
 		h.tx,
+		h.level,
 	}
 }
 
@@ -54,6 +57,7 @@ type Properties struct {
 	json                 bool
 	slogHandlerOptions   *slog.HandlerOptions
 	innerHandlerProvider InnerHandlerProvider
+	logLevel             slog.Level
 }
 
 // HandlerOption is a functional option for creating a new [TransactionalHandler].
@@ -84,13 +88,23 @@ func WithInnerHandlerProvider(innerHandlerProvider InnerHandlerProvider) Handler
 	}
 }
 
-// buildProperties creates a new Properties with the given options.
-func buildProperties(options []HandlerOption) *Properties {
-	p := &Properties{}
-	for _, o := range options {
-		o(p)
+// WithLogLevel specifies the log level.
+// if not specified, the default is [slog.LevelInfo].
+// if lower than the inner handler's level, the inner handler's level will be used.
+func WithLogLevel(level slog.Level) HandlerOption {
+	return func(p *Properties) {
+		p.logLevel = level
 	}
-	return p
+}
+
+// buildProperties creates a new Properties with the given options.
+func buildProperties(options []HandlerOption) (props *Properties) {
+	props = &Properties{}
+	props.logLevel = slog.LevelInfo
+	for _, o := range options {
+		o(props)
+	}
+	return
 }
 
 // NewTransactionalHandler is constructor for [TransactionalHandler].
@@ -107,17 +121,20 @@ func NewTransactionalHandler(app *newrelic.Application, tx *newrelic.Transaction
 		return &TransactionalHandler{
 			handler: p.innerHandlerProvider(ww),
 			tx:      tx,
+			level:   p.logLevel,
 		}
 	}
 	if p.json {
 		return &TransactionalHandler{
 			handler: slog.NewJSONHandler(ww, p.slogHandlerOptions),
 			tx:      tx,
+			level:   p.logLevel,
 		}
 	}
 	return &TransactionalHandler{
 		handler: slog.NewTextHandler(ww, p.slogHandlerOptions),
 		tx:      tx,
+		level:   p.logLevel,
 	}
 }
 
