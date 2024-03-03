@@ -11,6 +11,15 @@ altnrslog is an alternative library for [_New Relic Logs in Context_](https://do
 
 altnrslog can also forward `slog.Attr` even only APM Agent.
 
+## Roadmap to release stable version
+
+- [ ] Transaction Scope
+  - [x] Supports Logs in Context with APM Agent
+  - [ ] Supports Logs in Context without APM Agent
+- [ ] Application Scope
+  - [ ] Supports Logs in Context with APM Agent
+  - [ ] Supports Logs in Context without APM Agent
+
 ## Getting started
 
 ### Installation
