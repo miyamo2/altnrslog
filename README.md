@@ -16,7 +16,7 @@ altnrslog can also forward `slog.Attr` even only APM Agent.
 - [ ] Transaction Scope
   - [x] Supports Logs in Context with APM Agent
   - [ ] Supports Logs in Context without APM Agent
-- [ ] ~Application Scope~ **CANCELED** #32
+- [ ] ~Application Scope~ **CANCELED** [#32](https://github.com/miyamo2/altnrslog/issues/32)
   - [ ] ~Supports Logs in Context with APM Agent~
   - [ ] ~Supports Logs in Context without APM Agent~
 
