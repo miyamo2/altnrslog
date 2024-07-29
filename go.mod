@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/google/go-cmp v0.6.0
-	github.com/newrelic/go-agent/v3 v3.33.0
+	github.com/newrelic/go-agent/v3 v3.33.1
 	github.com/newrelic/go-agent/v3/integrations/logcontext-v2/logWriter v1.0.1
 	go.uber.org/mock v0.4.0
 )
