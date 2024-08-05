@@ -4,8 +4,8 @@ github.com/golang/protobuf v1.5.3/go.mod h1:XVQd3VNwM+JqD3oG2Ue2ip4fOMUkwXdXDdiu
 github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/newrelic/go-agent/v3 v3.33.1 h1:eWOtty43cyxrMKws4VNPdebgEB6ujFTf0yxPsgB0M80=
-github.com/newrelic/go-agent/v3 v3.33.1/go.mod h1:SMdqPzE/ghkWdY0rYGSD7Clw2daK/XH6pUnVd4albg4=
+github.com/newrelic/go-agent/v3 v3.34.0 h1:jhtX+YUrAh2ddgPGIixMYq4+nCBrEN4ETGyi2h/zWJw=
+github.com/newrelic/go-agent/v3 v3.34.0/go.mod h1:VNsi+XA7YsgF4fHES8l/U6OhAHhU3IdLDFkB/wpevvA=
 github.com/newrelic/go-agent/v3/integrations/logcontext-v2/logWriter v1.0.1 h1:QHUFxBPgC8YYcCRCGfteWJUnaQjetEFTmd67KQ44t1M=
 github.com/newrelic/go-agent/v3/integrations/logcontext-v2/logWriter v1.0.1/go.mod h1:eATzimYSQLsG+VFK2xJXWmniC1+zr44K7Owz5WEAoqc=
 github.com/newrelic/go-agent/v3/integrations/logcontext-v2/nrwriter v1.0.0 h1:ugrng2OpXAEmwCQgLNmIGM8m0MZiitpswBVotVjyivA=
